@@ -36,7 +36,6 @@ class Controller{
     });      
   };
 
-
   postEmployee=(req,res,next)=>{
     return new Promise((resolve,reject)=>{
       let len = req.body.length;
@@ -87,7 +86,6 @@ class Controller{
     })
   };
 
-
   delEmployee=(req,res,next)=>{
     return new Promise((resolve,reject)=>{
       const id =req.params.id;
@@ -98,6 +96,29 @@ class Controller{
         }
         resolve(res.json({status:"Record Deleted Successfully" , emp_id: id}));
       });
+    }).then((result)=>{
+      return result;
+    }).catch((error)=>{
+      return error;
+    })
+  };
+
+  delmulEmployee=(req,res,next)=>{
+    return new Promise((resolve,reject)=>{
+      const del =req.query;
+      const list= del.id.split(",");
+      console.log(list);
+      
+      for(let i=0;i<list.length;i++){
+        let sql=`DELETE from employee WHERE emp_id=${list[i]}`;
+        db.query(sql,(err,rows,fields)=>{
+          if(err){
+            reject(res.status(402).send({error: "Database Connectivity issue"}));
+          }
+
+        });
+      }
+      resolve(res.json({status:"Record Deleted Successfully" , emp_id: list}));
     }).then((result)=>{
       return result;
     }).catch((error)=>{

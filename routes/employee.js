@@ -21,9 +21,14 @@ class RouteHandler{
     
     // put /employee/putinfo/1001
     router.put('/putinfo/:id',emp.putEmployee);
+
+    
     
     // delete /employee/delinfo/1001
     router.delete('/delinfo/:id',emp.delEmployee);
+
+    // delete /employee/delmulinfo?id=1001,1002,1003
+    router.delete('/delmulinfo',emp.delmulEmployee);
     
     module.exports.router=router;
   }
