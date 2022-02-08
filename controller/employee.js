@@ -1,43 +1,41 @@
 const db= require('../db/database');
 
+//EmployeeController
 class Controller{
-  getEmployee = (req,res,next) => {
-    return new Promise((resolve,reject)=>{
-      const sql="SELECT * FROM employee";
-      db.query(sql,(err,rows,fields)=>{
-        if(err){   
-          reject(res.status(402).send({error: "Database Connectivity issue"}));
-        }
-        resolve(res.json(rows));
-      })
-    }).then((result)=>{
-        return result;
-    }).catch((error)=>{
-        return error;
-    })  
+  
+  getEmployee =async(req,res,next) =>{
+    try{
+    const sql= "SELECT * FROM employee";
+    await db.query(sql,(err,rows,fields)=>{
+      if(err){   
+        res.status(402).send({error: "Database Connectivity issue"});
+      }
+      return res.json(rows);
+    })
+  }catch(error){
+    console.log(error);
+  }
   };
-
-
-  getsingleEmployee=(req,res,next)=>{
-    return new Promise((resolve,reject)=>{
+   
+  getsingleEmployee=async (req,res,next)=>{
+    try{
       const id= req.params.id;
       console.log(id);
       const sql=`SELECT * FROM employee WHERE emp_id=${id}`;
-      db.query(sql,(err,rows,fields)=>{
+      await db.query(sql,(err,rows,fields)=>{
         if(err){
-          reject(res.status(402).send({error: "Database Connectivity issue"}));
+         return (res.status(402).send({error: "Database Connectivity issue"}));
         }
-        resolve(res.json(rows));
+        return(res.json(rows));
       })
-    }).then((result)=>{
-      return result;
-    }).catch((error)=>{
-      return error;
-    });      
+    }catch(error){
+      console.log(error);
+    }
+  
   };
 
   postEmployee=(req,res,next)=>{
-    return new Promise((resolve,reject)=>{
+    try{
       let len = req.body.length;
       console.log(len);
       for (let i = 0; i < len; i++) {
@@ -51,21 +49,21 @@ class Controller{
         let sql=`INSERT INTO employee (emp_id, emp_name , emp_job , emp_sal , emp_dept) VALUES ("${id}", "${name}", "${job}", "${sal}", "${dept}")`;    
         db.query(sql,(err,rows,fields)=>{
           if(err){
-            reject(res.status(402).send({error: "Database Connectivity issue"}));
+            return (res.status(402).send({error: "Database Connectivity issue"}));
           }
         });
       }
-      resolve(res.json({status:"Successfully Inserted"}));
-    }).then((result)=>{
-      return result;
-    }).catch((error)=>{
-      return error;          
-    })
+      return (res.json({status:"Successfully Inserted"}));
+    }
+    catch(error){
+      console.log(error);
+    }
+   
   };
 
 
   putEmployee=(req,res,next)=>{
-    return new Promise((resolve,reject)=>{
+    try{
       const id =req.params.id;
       const name= req.body.name;
       const job= req.body.job;
@@ -75,36 +73,29 @@ class Controller{
       const sql=`UPDATE employee SET emp_name="${name}", emp_job="${job}", emp_sal="${sal}", emp_dept="${dept}" WHERE emp_id=${id}`;              
       db.query(sql,(err,rows,fields)=>{
         if(err){
-          reject(res.status(402).send({error: "Database Connectivity issue"}));
+          return (res.status(402).send({error: "Database Connectivity issue"}));
         }
-        resolve(res.json({status:"Updated Successfully" , emp_id: id}));
+        return (res.json({status:"Updated Successfully" , emp_id: id}));
       });
-    }).then((result)=>{
-      return result;
-    }).catch((error)=>{
-      return error;
-    })
+    }catch(error){
+      console.log(error)
+    }
+   
   };
 
   delEmployee=(req,res,next)=>{
-    return new Promise((resolve,reject)=>{
+   
       const id =req.params.id;
       const sql=`DELETE from employee WHERE emp_id=${id}`;
       db.query(sql,(err,rows,fields)=>{
         if(err){
-          reject(res.status(402).send({error: "Database Connectivity issue"}));
+          return(res.status(402).send({error: "Database Connectivity issue"}));
         }
-        resolve(res.json({status:"Record Deleted Successfully" , emp_id: id}));
+        return(res.json({status:"Record Deleted Successfully" , emp_id: id}));
       });
-    }).then((result)=>{
-      return result;
-    }).catch((error)=>{
-      return error;
-    })
   };
 
   delmulEmployee=(req,res,next)=>{
-    return new Promise((resolve,reject)=>{
       const del =req.query;
       const list= del.id.split(",");
       console.log(list);
@@ -113,17 +104,12 @@ class Controller{
         let sql=`DELETE from employee WHERE emp_id=${list[i]}`;
         db.query(sql,(err,rows,fields)=>{
           if(err){
-            reject(res.status(402).send({error: "Database Connectivity issue"}));
+            return(res.status(402).send({error: "Database Connectivity issue"}));
           }
-
         });
       }
-      resolve(res.json({status:"Record Deleted Successfully" , emp_id: list}));
-    }).then((result)=>{
-      return result;
-    }).catch((error)=>{
-      return error;
-    })
+      return(res.json({status:"Record Deleted Successfully" , emp_id: list}));
+   
   };
 }
 
